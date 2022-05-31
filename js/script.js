@@ -31,14 +31,14 @@ const handleKeydown = event => {
   handleJump()
 }
 
-const handleClick = () => {
+const handleMousedown = () => {
   if(!char) return window.location.reload()
   handleJump()
 }
 
 window.addEventListener('keydown', handleKeydown)
-
-gameboard.addEventListener('click', handleJump)
+gameboard.addEventListener('mousedown', handleMousedown)
+gameboard.addEventListener('touchstart', handleMousedown)
 
 const gameLoop = setInterval(() => {
   try {
@@ -61,7 +61,8 @@ const gameLoop = setInterval(() => {
 
       clearInterval(gameLoop)
       window.removeEventListener('keydown', handleKeydown)
-      gameboard.removeEventListener('click', handleClick)
+      gameboard.removeEventListener('mousedown', handleMousedown)
+      gameboard.removeEventListener('touchstart', handleMousedown)
     }
   }catch(e) {
     console.error("Erro ao tentar atualizar obstáculo: ", e)
