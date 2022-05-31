@@ -1,0 +1,88 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --obstacle-width: 80px;
+  --obstacle-animation-duration: 2000ms;
+
+  --char-width: 120px;
+  --char-dead-width: 65px;
+  --char-dead-margin-left: 55px;
+  --char-jump-height: calc(var(--char-width) + 60px);
+  --char-jump-duration: 500ms;
+
+  --scenery-width: 500px;
+  --scenery-animation-duration: 20000ms;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+.gameboard {
+  width: 100%;
+  height: 100%;
+  border-bottom: 20px solid #46bd17;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(lightblue, white);
+}
+
+.obstacle {
+  position: absolute;
+  width: var(--obstacle-width);
+  bottom: 0;
+  animation: slide-obstacle var(--obstacle-animation-duration) linear infinite;
+}
+
+.char {
+  position: absolute;
+  bottom: 0;
+  width: var(--char-width);
+}
+
+.char-jump {
+  animation: jump-char var(--char-jump-duration) ease-out;
+}
+
+.scenery {
+  position: absolute;
+  width: var(--scenery-width);
+  animation: slide-scenery var(--scenery-animation-duration) linear infinite;
+}
+
+@keyframes slide-obstacle {
+  from {
+    right: calc(var(--obstacle-width) * -1);
+  }
+  to {
+    right: 100%;
+  }
+}
+
+@keyframes jump-char {
+  0% {
+    bottom: 0;
+  }
+  40% {
+    bottom: var(--char-jump-height)
+  }
+  50% {
+    bottom: var(--char-jump-height)
+  }
+  60% {
+    bottom: var(--char-jump-height)
+  }
+  100% {
+    bottom: 0;
+  }
+}
+
+@keyframes slide-scenery {
+  from {
+    right: calc(var(--scenery-width) * -1);
+  }
+  to {
+    right: 100%;
+  }
+}
