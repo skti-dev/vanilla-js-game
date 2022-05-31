@@ -1,3 +1,4 @@
+const gameboard = document.querySelector("[data-value='gameboard']")
 const char = document.querySelector("[data-value='char']")
 const obstacle = document.querySelector("[data-value='obstacle']")
 const scenery = document.querySelector("[data-value='scenery']")
@@ -11,12 +12,8 @@ const charDeadWidth = window.getComputedStyle(document.documentElement).getPrope
 const charDeadMarginLeft = window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-margin-left") ? window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-margin-left") : "55px"
 const charDeadSrc = "./images/game-over.webp"
 
-const handleJump = event => {
+const handleJump = () => {
   try {
-    if(!char) return window.location.reload()
-    const { keyCode } = event
-    const validKeyCodes = [37, 38, 39, 40, 32]
-    if (!validKeyCodes.includes(keyCode)) return false
     char.classList.add("char-jump")
     setTimeout(() => {
       char.classList.remove("char-jump")
@@ -26,7 +23,22 @@ const handleJump = event => {
   }
 }
 
-window.addEventListener('keydown', handleJump)
+const handleKeydown = event => {
+  if(!char) return window.location.reload()
+  const { keyCode } = event
+  const validKeyCodes = [37, 38, 39, 40, 32]
+  if (!validKeyCodes.includes(keyCode)) return false
+  handleJump()
+}
+
+const handleClick = () => {
+  if(!char) return window.location.reload()
+  handleJump()
+}
+
+window.addEventListener('keydown', handleKeydown)
+
+gameboard.addEventListener('click', handleJump)
 
 const gameLoop = setInterval(() => {
   try {
@@ -48,7 +60,8 @@ const gameLoop = setInterval(() => {
       scenery.style.left = `${sceneryPosition}px`
 
       clearInterval(gameLoop)
-      window.removeEventListener('keydown', handleJump)
+      window.removeEventListener('keydown', handleKeydown)
+      gameboard.removeEventListener('click', handleClick)
     }
   }catch(e) {
     console.error("Erro ao tentar atualizar obstáculo: ", e)
