@@ -1,30 +1,60 @@
+let hasError = false
+
 const gameboard = document.querySelector("[data-value='gameboard']")
 const char = document.querySelector("[data-value='char']")
 const obstacle = document.querySelector("[data-value='obstacle']")
 const scenery = document.querySelector("[data-value='scenery']")
 
-const charAnimationDuration = window.getComputedStyle(document.documentElement).getPropertyValue("--char-animation-duration") ? window.getComputedStyle(document.documentElement).getPropertyValue("--char-animation-duration") : 500
-const charWidth = window.getComputedStyle(document.documentElement).getPropertyValue("--char-width") ? +window.getComputedStyle(document.documentElement).getPropertyValue("--char-width").replace("px", "") : 120
+if(!gameboard || !char || !obstacle || !scenery) hasError = true
 
-const obstacleWidth = window.getComputedStyle(document.documentElement).getPropertyValue("--obstacle-width") ? +window.getComputedStyle(document.documentElement).getPropertyValue("--obstacle-width").replace("px", "") : 80
+const gamedata = {
+  char: {
+    duration: 500,
+    width: 120
+  },
+  obstacle: {
+    duration: 2000,
+    width: 80
+  },
+  charDead: {
+    width: "65px",
+    marginLeft: "55px",
+    source: "./images/game-over.webp"
+  }
+}
 
-const charDeadWidth = window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-width") ? window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-width") : "65px"
-const charDeadMarginLeft = window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-margin-left") ? window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-margin-left") : "55px"
-const charDeadSrc = "./images/game-over.webp"
+const initVars = () => {
+  try {
+    gamedata.char.duration = +window.getComputedStyle(document.documentElement).getPropertyValue("--char-animation-duration").replace("ms", "")
+    gamedata.char.width = +window.getComputedStyle(document.documentElement).getPropertyValue("--char-width").replace("px", "")
+
+    gamedata.obstacle.duration = +window.getComputedStyle(document.documentElement).getPropertyValue("--obstacle-animation-duration").replace("ms", "")
+    gamedata.obstacle.width = +window.getComputedStyle(document.documentElement).getPropertyValue("--obstacle-width").replace("px", "")
+
+    gamedata.charDead.width = window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-width").trim("")
+    gamedata.charDead.marginLeft = window.getComputedStyle(document.documentElement).getPropertyValue("--char-dead-margin-left").trim("")
+  }catch(e) {
+    hasError = true
+    console.error("Erro ao inicializar variáveis: ", e)
+  }
+}
+initVars()
 
 const handleJump = () => {
   try {
+    if(hasError) return window.location.reload()
     char.classList.add("char-jump")
     setTimeout(() => {
+      console.log("removeu")
       char.classList.remove("char-jump")
-    }, charAnimationDuration)
+    }, gamedata.char.duration)
   }catch(e) {
     console.error("Erro ao tentar pular: ", e)
   }
 }
 
 const handleKeydown = event => {
-  if(!char) return window.location.reload()
+  if(hasError) return window.location.reload()
   const { keyCode } = event
   const validKeyCodes = [37, 38, 39, 40, 32]
   if (!validKeyCodes.includes(keyCode)) return false
@@ -32,7 +62,7 @@ const handleKeydown = event => {
 }
 
 const handleMousedown = () => {
-  if(!char) return window.location.reload()
+  if(hasError) return window.location.reload()
   handleJump()
 }
 
@@ -46,15 +76,15 @@ const gameLoop = setInterval(() => {
     const charPosition = +window.getComputedStyle(char).getPropertyValue("bottom").replace("px", "")
     const sceneryPosition = scenery.offsetLeft
 
-    if(obstaclePosition <= charWidth && obstaclePosition > 0 && charPosition < obstacleWidth) {
+    if(obstaclePosition <= gamedata.char.width && obstaclePosition > 0 && charPosition < gamedata.obstacle.width) {
       obstacle.style.animation = "none"
       obstacle.style.left = `${obstaclePosition}px`
       
       char.style.animation = "none"
-      char.src = charDeadSrc
+      char.src = gamedata.charDead.source
       char.style.bottom = `${charPosition}px`
-      char.style.width = charDeadWidth
-      char.style.marginLeft = charDeadMarginLeft
+      char.style.width = gamedata.charDead.width
+      char.style.marginLeft = gamedata.charDead.marginLeft
 
       scenery.style.animation = "none"
       scenery.style.left = `${sceneryPosition}px`

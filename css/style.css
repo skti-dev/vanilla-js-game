@@ -8,7 +8,7 @@
   --char-dead-width: 65px;
   --char-dead-margin-left: 55px;
   --char-jump-height: calc(var(--char-width) + 60px);
-  --char-jump-duration: 500ms;
+  --char-animation-duration: 500ms;
 
   --scenery-width: 500px;
   --scenery-animation-duration: 20000ms;
@@ -42,7 +42,7 @@ html, body {
 }
 
 .char-jump {
-  animation: jump-char var(--char-jump-duration) ease-out;
+  animation: jump-char var(--char-animation-duration) ease-out;
 }
 
 .scenery {
